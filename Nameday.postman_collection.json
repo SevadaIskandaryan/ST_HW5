@@ -1,0 +1,420 @@
+{
+	"info": {
+		"_postman_id": "cd660715-d6bf-41a3-842c-ee42b2cfeaf7",
+		"name": "Nameday",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34863459"
+	},
+	"item": [
+		{
+			"name": "today",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields - day, month, and nameday\", function () {",
+							"    pm.expect(pm.response.json()).to.be.an('object').that.has.all.keys('day', 'month', 'nameday');",
+							"});",
+							"",
+							"pm.test(\"Nameday object contains keys for different country codes\", function () {",
+							"    pm.expect(pm.response.json().nameday).to.be.an('object').and.to.include.all.keys([\"at\", \"bg\", \"cz\", \"de\", \"dk\", \"ee\", \"es\", \"fi\", \"fr\", \"gr\", \"hr\", \"hu\", \"it\", \"lt\", \"lv\", \"pl\", \"ru\", \"se\", \"sk\", \"us\"]);",
+							"});",
+							"",
+							"pm.test(\"Response time is within an acceptable range\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Month is 5 from the collection variables\", function () {",
+							"    pm.expect(pm.response.json().month).to.equal(parseInt(pm.collectionVariables.get(\"month\")));",
+							"});",
+							"",
+							"// Stores the day value in a Collection variable as a string",
+							"var dayValue = pm.response.json().day.toString();",
+							"pm.collectionVariables.set(\"day\", dayValue);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the current date\r",
+							"const currentDate = new Date();\r",
+							"\r",
+							"// Get the current month (January is 0, February is 1, and so on)\r",
+							"const currentMonth = currentDate.getMonth() + 1;\r",
+							"\r",
+							"pm.collectionVariables.set(\"month\", currentMonth.toString());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/today",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"today"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "yesterday",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the response schema for the presence of required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('day');\r",
+							"    pm.expect(responseData).to.have.property('month');\r",
+							"    pm.expect(responseData).to.have.property('nameday');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Nameday object contains non-empty strings for each country code\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.nameday).to.be.an('object');\r",
+							"    \r",
+							"    Object.keys(responseData.nameday).forEach(function(key) {\r",
+							"        pm.expect(responseData.nameday[key]).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Month is 5 from the collection variables\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.month).to.equal(parseInt(pm.collectionVariables.get(\"month\")));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/yesterday",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"yesterday"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tomorrow",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - day, month, and nameday\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.have.property('day');\r",
+							"    pm.expect(responseData).to.have.property('month');\r",
+							"    pm.expect(responseData).to.have.property('nameday');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Day and month are non-negative integers\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.day).to.be.a('number').and.to.satisfy((val) => val >= 0, \"Day should be a non-negative integer\");\r",
+							"  pm.expect(responseData.month).to.be.a('number').and.to.satisfy((val) => val >= 0, \"Month should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Month is 5 from the collection variables\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.month).to.equal(parseInt(pm.collectionVariables.get(\"month\")));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/tomorrow",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tomorrow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "specificDate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('day');\r",
+							"    pm.expect(responseData).to.have.property('month');\r",
+							"    pm.expect(responseData).to.have.property('nameday');\r",
+							"    pm.expect(responseData).to.have.property('country');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Day and month are non-negative integers\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.day).to.be.a('number').and.to.be.at.least(0);\r",
+							"    pm.expect(responseData.month).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Nameday and country are non-empty strings\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.nameday.pl).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Nameday should not be empty\");\r",
+							"    pm.expect(responseData.country).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Country should not be empty\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Country in the response is 'pl'\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.country).to.equal(pm.collectionVariables.get(\"country\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the current date\r",
+							"const currentDate = new Date();\r",
+							"\r",
+							"// Get the current month (January is 0, February is 1, and so on)\r",
+							"const currentMonth = currentDate.getMonth() + 1;\r",
+							"\r",
+							"pm.collectionVariables.set(\"month\", currentMonth.toString());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/getdate?day={{day}}&month={{month}}&country={{country}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"getdate"
+					],
+					"query": [
+						{
+							"key": "day",
+							"value": "{{day}}"
+						},
+						{
+							"key": "month",
+							"value": "{{month}}"
+						},
+						{
+							"key": "country",
+							"value": "{{country}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "specificName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response Content-Type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - day, month, and name\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData[0]).to.be.an('array').that.is.not.empty;",
+							"    ",
+							"    responseData[0].forEach(function(item) {",
+							"        pm.expect(item).to.have.property('day');",
+							"        pm.expect(item).to.have.property('month');",
+							"        pm.expect(item).to.have.property('name');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Country is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.country).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Country should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Country in the response is 'pl'\", function () {",
+							"    const responseData = pm.response.json();",
+							"    pm.expect(responseData.country).to.equal(pm.collectionVariables.get(\"country\"));",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/getname?name=Walenty&country={{country}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"getname"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Walenty"
+						},
+						{
+							"key": "country",
+							"value": "{{country}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "country",
+			"value": "pl",
+			"type": "string"
+		},
+		{
+			"key": "month",
+			"value": "5",
+			"type": "string"
+		},
+		{
+			"key": "day",
+			"value": "1"
+		}
+	]
+}
